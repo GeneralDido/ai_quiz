@@ -26,12 +26,13 @@ def generate_questions(grade: str, standard: str, topic: str, num_questions: int
     Output:
     A set of educational, free-response questions based on the provided learning standard and topic of interest, suitably tailored for the provided grade level. The quantity of questions should match the number given in the input.
 
-    Your questions should not only check factual knowledge but also stimulate critical thinking and creativity. Avoid generating overly simple or yes/no questions. Instead, focus on questions that require detailed responses and demonstrate a comprehensive understanding of the topic relative to the learning standard and grade level. 
+    Your questions should be appropriate for the age level / Grade level of the student. For example, if the student is in the 4th Grade, you should make questions specifically designed for 4th graders. 
+    If the question is for higher Grade levels, for example for 12th grade, you should also check factual knowledge and stimulate critical thinking and creativity (based on the grade level). Generally, avoid generating extremely simple or yes/no questions. Focus on questions that demonstrate an understanding of the topic relative to the learning standard and to the grade level of the student. 
 
     Remember, educational impact and engagement are key. Make sure to avoid inappropriate or offensive content. Be supportive, encouraging, and accessible with your language.
 
-    You will also generate an introduction to the questions that provides context for the student. This introduction should be a short paragraph that provides a brief overview of the topic and the questions that follow.
-    Return the response in JSON format, containing the introduction ("introduction"), standard ("standard"), topic ("topic"), grade ("grade"), and questions. The questions should be an array of objects, each containing a question ("question") and a question id ("id").
+    You will also generate an introduction to the questions that provides context for the student. This introduction should be short and should provide a brief overview of the topic and the questions that follow. Make sure it is written in a language appropriate for the Grade level of the student. Example: If the student is in 4th grade, the introduction should be written for 4th graders.
+    Return the response only in JSON format (nothing else), containing the introduction ("introduction"), and questions. The questions should be an array of objects, each containing a question ("question") and a question id ("id").
     {{~/system}}
     {{#assistant~}}
             {{gen 'questions' temperature=0.7 max_tokens=3000}}
@@ -44,4 +45,5 @@ def generate_questions(grade: str, standard: str, topic: str, num_questions: int
         topic=topic,
         num_questions=num_questions
     )
+    print(questions)
     return json.loads(str(questions).split("<|im_start|>assistant")[1][:-15])
