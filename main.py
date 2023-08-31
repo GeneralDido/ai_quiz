@@ -1,5 +1,8 @@
 import streamlit as st
+import matplotlib.pyplot as plt
+
 from generate_questions import generate_questions
+from generate_evaluations import generate_evaluations
 
 
 def main():
@@ -24,46 +27,23 @@ def main():
 
     # Input Interface
     with st.sidebar:
+        st.markdown("### Made by Dimitris Panouris")
         grade = st.selectbox('Select Grade Level:', ['4', '5', '6', '7', '8', '9', '10', '11', '12'])
-        standard = st.selectbox('Select Academic Standard:', ['Reading: Literature', 'Reading: Informational Text', 'Writing', 'Language', 'Mathematics'])
+        standard = st.selectbox('Select Academic Standard:', ['Reading: Literature', 'Reading: Informational Text', 'Writing'])
         topic = st.text_input('Enter your interest topic:', 'baseball')
-        num_questions = st.number_input('Enter the number of questions you want to generate:', min_value=1, max_value=5, value=1, step=1)
+        num_questions = st.number_input('Enter the number of questions you want to generate:', min_value=1, max_value=4, value=1, step=1)
 
         # Change app state based on button press
         if st.button("Generate Questions"):
             st.session_state.app_state = 'submission'
-            # st.session_state.questions_data = generate_questions(grade=grade, standard=standard, topic=topic, num_questions=num_questions)
-
-            # only for dev purposes, so it does not make multiple calls to OpenAI API
-            st.session_state.questions_data = {
-            "introduction": "Steve Jobs was a visionary and co-founder of Apple Inc., one of the world's leading technology companies. His life story and innovative thinking continue to inspire millions around the globe. In this assignment, we will delve into his life, achievements, and the impact he made on the world of technology using informational texts. Remember, this isn't just about recalling facts. Try to think critically about the information, analyze it, and form your own opinions.",
-            "questions": [
-                {
-                "id": 1,
-                "question": "Based on the texts you've read about Steve Jobs, how would you describe his personality, leadership style, and work ethic? Provide specific examples to support your answer."
-                },
-                {
-                "id": 2,
-                "question": "What significant challenges did Steve Jobs face in his career, and how did he overcome them? How did these experiences shape him as a leader and innovator?"
-                },
-                {
-                "id": 3,
-                "question": "In your own words, explain how Steve Jobs' innovations in technology have influenced and shaped our everyday lives. Provide at least three examples."
-                },
-                {
-                "id": 4,
-                "question": "If you had a chance to interview Steve Jobs, what three questions would you ask him and why? Explain how these questions relate to your understanding of his life and contributions."
-                }
-            ]
-        }
-
+            st.session_state.questions_data = generate_questions(grade=grade, standard=standard, topic=topic, num_questions=num_questions)
             st.session_state.questions = st.session_state.questions_data["questions"]
             st.session_state.user_answers = {q["id"]: "" for q in st.session_state.questions}
 
     # Display content based on the app state
     if st.session_state.app_state == 'submission':
         # Display introduction
-        st.write(st.session_state.questions_data["introduction"])
+        st.markdown(f"#### {st.session_state.questions_data['introduction']}")
 
         # Using a form to group the questions and answers
         with st.form(key="question_form"):
@@ -71,22 +51,63 @@ def main():
             for q in st.session_state.questions:
                 st.write(q["question"])
                 answer_key = f"answer_{q['id']}"
-                st.session_state.user_answers[q["id"]] = st.text_area("Your Answer", st.session_state.user_answers[q["id"]], key=answer_key)
+                st.session_state.user_answers[q["id"]] = st.text_area("Your Answer in Markdown", st.session_state.user_answers[q["id"]], key=answer_key)
 
             # Form Submit button
             if st.form_submit_button("Submit", on_click=disable_btn, args=(True,), disabled=st.session_state.get("disabled", False)):
                 st.session_state.app_state = 'results'
 
-
-    # If the user has submitted, display the answers
+    
     if st.session_state.app_state == 'results':
+        # Fetch evaluations
+        evaluations = generate_evaluations(grade, standard, topic, st.session_state.questions, st.session_state.user_answers)
+
         # Display Thank You message and user responses
         st.write("Thank you for answering all the questions.")
+
         for q in st.session_state.questions:
-            st.write(q["question"])
-            st.write("Your answer: " + st.session_state.user_answers[q["id"]])
-    print(st.session_state.user_answers)
-    print(st.session_state.questions_data)
+            # Group each question, answer, and explanation
+            with st.expander(f"Question {q['id']} - Click to Expand", expanded=True):
+                st.write("### Question:")
+                st.write(q["question"])
+                
+                st.write("### Your Answer:")
+                st.markdown(f"**{st.session_state.user_answers[q['id']]}**")
+
+                # Fetch the corresponding evaluation for the question
+                eval_item = next((item for item in evaluations['evaluations'] if item["id"] == q["id"]), None)
+                if eval_item:
+                    st.write("### Grade:")
+                    st.write(f"{eval_item['grade']}")
+                    
+                    st.write("### Explanation:")
+                    st.write(f"{eval_item['explanation']}")
+                else:
+                    st.write("Error: Evaluation not found for this question.")
+        
+        # Display final feedback and grade
+        st.write(f"### Final Grade: {evaluations['finalGrade']}")
+        st.write(f"### Final Feedback: {evaluations['finalFeedback']}")
+
+        # Visualize grades using a bar chart
+        question_ids = [str(q["id"]) for q in st.session_state.questions]
+        grades = [item['grade'] for item in evaluations['evaluations']]
+        
+        # Add the final grade to the grades list
+        question_ids.append("Final")
+        grades.append(evaluations['finalGrade'])
+
+        # Adjusting the size of the graph
+        fig, ax = plt.subplots(figsize=(6, 4))  # Adjust these values as needed
+        ax.bar(question_ids, grades, color='skyblue')
+        ax.set_xlabel('Questions')
+        ax.set_ylabel('Grades')
+        ax.set_title('Grades for Each Question and Final Grade')
+        ax.set_ylim(1, 5)  # Grade Scale is 1 to 5
+        st.pyplot(fig, use_container_width=False)
+
+
+
 
 
 if __name__ == "__main__":
