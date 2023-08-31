@@ -5,7 +5,6 @@ import guidance
 from dotenv import load_dotenv
 
 gpt4 = guidance.llms.OpenAI("gpt-4")
-gpt3 = guidance.llms.OpenAI("gpt-3.5-turbo")
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -32,7 +31,7 @@ def generate_questions(grade: str, standard: str, topic: str, num_questions: int
     Remember, educational impact and engagement are key. Make sure to avoid inappropriate or offensive content. Be supportive, encouraging, and accessible with your language.
 
     You will also generate an introduction to the questions that provides context for the student. This introduction should be a short paragraph that provides a brief overview of the topic and the questions that follow.
-    Return the response in JSON format, containing the introduction ("introduction") and questions. The questions should be an array of objects, each containing a question ("question") and a question id ("id").
+    Return the response in JSON format, containing the introduction ("introduction"), standard ("standard"), topic ("topic"), grade ("grade"), and questions. The questions should be an array of objects, each containing a question ("question") and a question id ("id").
     {{~/system}}
     {{#assistant~}}
             {{gen 'questions' temperature=0.7 max_tokens=3000}}
