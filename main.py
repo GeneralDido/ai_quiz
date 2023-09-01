@@ -59,7 +59,7 @@ def main():
             for q in st.session_state.questions:
                 st.write(f"##### {q['question']}")
                 answer_key = f"answer_{q['id']}"
-                st.session_state.user_answers[q["id"]] = st.text_area("Your Answer in Markdown", st.session_state.user_answers[q["id"]], key=answer_key,height=180)
+                st.session_state.user_answers[q["id"]] = st.text_area("Your Answer in Markdown, max: 750 characters", st.session_state.user_answers[q["id"]], key=answer_key,height=180, max_chars=750)
             # Form Submit button
             if st.form_submit_button("Submit", on_click=disable_submit_btn, args=(True,), disabled=st.session_state.get("disabled_submit", False)):
                 st.session_state.app_state = 'results'
