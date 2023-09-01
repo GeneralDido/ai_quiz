@@ -31,8 +31,8 @@ def main():
     with st.sidebar:
         st.markdown("### Made by Dimitris Panouris")
         grade = st.selectbox('Select Grade Level:', academic_grades)
-        standard = st.selectbox('Select Academic Standard:', academic_standards)
-        standardNum = st.selectbox('Select specific number for Academic Standard', academic_standards_num)
+        standard = st.selectbox('Select Common Core Learning Standard Topic:', academic_standards)
+        standardNum = st.selectbox('Select Common Core Learning Standard Number:', academic_standards_num)
         topic = st.text_input('Enter your interest topic:', 'baseball')
         num_questions = st.number_input('Enter the number of questions to generate:', min_value=1, max_value=max_num_questions, value=1, step=1)
         
