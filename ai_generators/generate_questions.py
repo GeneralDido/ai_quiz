@@ -46,5 +46,4 @@ def generate_questions(grade: str, standard: str, topic: str, num_questions: int
         topic=topic,
         num_questions=num_questions
     )
-    print(questions)
     return json.loads(str(questions).split("<|im_start|>assistant")[1][:-15])

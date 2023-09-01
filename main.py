@@ -1,9 +1,9 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-from generate_questions import generate_questions
-from generate_evaluations import generate_evaluations
-
+from ai_generators.generate_questions import generate_questions
+from ai_generators.generate_evaluations import generate_evaluations
+from helper.grades_standards import academic_grades, academic_standards, max_num_questions
 
 def main():
     # Disable buttons after click
@@ -30,10 +30,10 @@ def main():
     # Input Interface
     with st.sidebar:
         st.markdown("### Made by Dimitris Panouris")
-        grade = st.selectbox('Select Grade Level:', ['4', '5', '6', '7', '8', '9', '10', '11', '12'])
-        standard = st.selectbox('Select Academic Standard:', ['Reading: Literature', 'Reading: Informational Text', 'Writing'])
+        grade = st.selectbox('Select Grade Level:', academic_grades)
+        standard = st.selectbox('Select Academic Standard:', academic_standards)
         topic = st.text_input('Enter your interest topic:', 'baseball')
-        num_questions = st.number_input('Enter the number of questions to generate:', min_value=1, max_value=4, value=1, step=1)
+        num_questions = st.number_input('Enter the number of questions to generate:', min_value=1, max_value=max_num_questions, value=1, step=1)
         
         
         # Change app state based on button press
@@ -42,7 +42,7 @@ def main():
             
             # Generate questions
             st.session_state.questions_data = generate_questions(grade=grade, standard=standard, topic=topic, num_questions=num_questions)
-            
+
             st.session_state.questions = st.session_state.questions_data["questions"]
             st.session_state.user_answers = {q["id"]: "" for q in st.session_state.questions}
         st.write("Please be patient while the questions are being generated. This may take some time.")
