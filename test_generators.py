@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from ai_generators.generate_questions import generate_questions
 from ai_generators.generate_evaluations import generate_evaluations
-from helper.grades_standards import academic_standards, academic_grades, max_num_questions
+from helper.grades_standards import academic_standards, academic_grades, academic_standards_num, max_num_questions
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -18,19 +18,24 @@ gpt4 = guidance.llms.OpenAI("gpt-4")
 def generate_student():
     student = guidance('''
         {{#system~}}        
-        Your task is to generate a relevant topic based on the student's Grade level and Core Learning Standard.
-        This ia a list of the academic_standards, randomly choose one: {{academic_standards}}}
-        This is a list of academic_grades, randomly choose one: {{academic_grades}}
+        Your task is to generate a relevant topic based on the student's Grade level and a Core Learning Standard.
+        This ia a list of Core Learning Standard topics, choose one: {{academic_standards}}}
+        This is a list of Grades, choose one: {{academic_grades}}
+        This is a list of Core Learning Standard numbers, choose one: {{academic_standards_num}}}
+        Based on the Grade, Core Learning Standard Topic, and Core Learning Standard number, you will generate a specific Learning Standard. As an example: Grade: 4, Core Learning Standard: Writing, Core Learning Standard number: 9 should give: CCSS.ELA-LITERACY.W.4.9
+        You will generate a topic of interest for the student, based on the Grade level of the student and the Core Learning Standard. 
         Please choose appropriate number of questions for the topic, ranging from 1 to a maximum of {{max_num_questions}}.
-        Finally, based on the student's Grade level and Core Learning Standard, you will generate a topic of interest. 
-        The topic of interest should be relevant to both the Core Learning Standard and the Grade level, for example, if the student is in 4th grade and Core Learning Standard is Reading: Literature, the topic should be relevant to 4th graders and should be relevant to Reading: Literature.
+        
+        The topic of interest should be relevant to both the Core Learning Standard and the Grade level, for example, if the student is in 4th grade, the topic should be relevant to 4th graders.
         Please think of new examples to provide each time. Avoid using the given examples when creating the output. Only create unique outputs based on the selections made.                       
         Return the response only in JSON format (nothing else). 
         - - - - - - - - - - - - - - - - - - - - 
         Example JSON response:
         {
           "grade": "4",
-          "standard": "Writing",
+          "standard_topic": "Writing",
+          "standard_num": "9",
+          "learning_standard": "CCSS.ELA-LITERACY.W.4.9",
           "topic": "Baseball",
           "num_questions": 3
         }
@@ -42,6 +47,7 @@ def generate_student():
 
     student = student(
         academic_standards=academic_standards,
+        academic_standards_num=academic_standards_num,
         academic_grades=academic_grades,
         max_num_questions=max_num_questions
     )
@@ -52,11 +58,11 @@ def generate_student():
 def answer_questions(questions: dict, student: dict):
     answer_questions = guidance('''
     {{#system~}}        
-    Your task is to engage in academic role-play. You'll be portraying a student of a specific grade level, responding to a series of questions informed by a Core Learning Standard.
+    Your task is to engage in academic role-play. You'll be portraying a student of a specific grade level, responding to a series of questions informed by a Common Core Learning Standard.
     Your foremost goal isn't just answering correctly, but emulating the educational level and understanding of the given Grade level. 
     The input you receive will consist of three elements: 
     1. The student's grade level: {{grade}}
-    2. The related Core Learning Standard: {{standard}}
+    2. The related Common Core Learning Standard: {{standard}}
     3. A dictionary of questions, each with a unique ID: {{questions}}
 
     With this data, you are to respond to each question in a way that corresponds to the understanding level of the grade you are simulating. Ensure that your responses vary in quality, capturing the full spectrum from 'Unacceptable' to 'Excellent', reflecting grades from 0 to 5 on our evaluation scale.
@@ -80,7 +86,7 @@ def answer_questions(questions: dict, student: dict):
 
     answer_questions = answer_questions(
         grade=student['grade'],
-        standard=student['standard'],
+        standard=student['learning_standard'],
         questions=questions['questions']
     )
     return json.loads(str(answer_questions).split("<|im_start|>assistant")[1][:-15])
@@ -149,7 +155,7 @@ def test():
     print(student)
     print('-------------------')
 
-    questions = generate_questions(grade=student['grade'], standard=student['standard'], topic=student['topic'], num_questions=student['num_questions'])
+    questions = generate_questions(grade=student['grade'], standard=student['standard_topic'], standardNum=student['standard_num'], topic=student['topic'], num_questions=student['num_questions'])
     print('QUESTIONS: ')
     print(questions)
     print('-------------------')
@@ -159,7 +165,7 @@ def test():
     print(answers)
     print('-------------------')
 
-    evaluations = generate_evaluations(grade=student['grade'], standard=student['standard'], topic=student['topic'], questions=questions['questions'], answers=convert_answers_to_dict(answers))
+    evaluations = generate_evaluations(grade=student['grade'], standard=student['learning_standard'], topic=student['topic'], questions=questions['questions'], answers=convert_answers_to_dict(answers))
     print('EVALUATIONS: ')
     print(evaluations)
     print('-------------------')
@@ -170,4 +176,4 @@ def test():
 
 
 # uncomment test function and run file to test consistency
-# test()
+test()
