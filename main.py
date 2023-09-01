@@ -43,20 +43,7 @@ def main():
             
             # Generate questions
             st.session_state.questions_data = generate_questions(grade=grade, standard=standard,standardNum=standardNum, topic=topic, num_questions=num_questions)
-#             st.session_state.questions_data = {
-#   "learning_standard": "CCSS.ELA-LITERACY.W.4.9",
-#   "introduction": "Hey there, baseball fan! We're going to use your interest in baseball to practice some writing skills. Specifically, we're going to focus on drawing evidence from literary or informational texts to support analysis, reflection, and research, as outlined in the CCSS.ELA-LITERACY.W.4.9 standard. Are you ready to hit a homerun with these questions?",
-#   "questions": [
-#     {
-#       "id": "1",
-#       "question": "Imagine your favorite baseball player has just completed the most exciting game of their career. Write a short story about that game. Make sure to include detailed descriptions and events from the game that show why it was so exciting."
-#     },
-#     {
-#       "id": "2",
-#       "question": "If you were to write a research paper about the history of baseball, what are three key points or events you would include and why? Remember to think about the impact these points or events had on the game as we know it today."
-#     }
-#   ]
-# }
+
             st.session_state.questions = st.session_state.questions_data["questions"]
             st.session_state.user_answers = {q["id"]: "" for q in st.session_state.questions}
         st.write("*Please be patient while the questions are being generated. This may take some time.*")
