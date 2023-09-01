@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from ai_generators.generate_questions import generate_questions
 from ai_generators.generate_evaluations import generate_evaluations
-from helper.grades_standards import academic_grades, academic_standards, max_num_questions
+from helper.grades_standards import academic_grades, academic_standards, academic_standards_num, max_num_questions
 
 def main():
     # Disable buttons after click
@@ -32,6 +32,7 @@ def main():
         st.markdown("### Made by Dimitris Panouris")
         grade = st.selectbox('Select Grade Level:', academic_grades)
         standard = st.selectbox('Select Academic Standard:', academic_standards)
+        standardNum = st.selectbox('Select specific number for Academic Standard', academic_standards_num)
         topic = st.text_input('Enter your interest topic:', 'baseball')
         num_questions = st.number_input('Enter the number of questions to generate:', min_value=1, max_value=max_num_questions, value=1, step=1)
         
@@ -41,14 +42,30 @@ def main():
             st.session_state.app_state = 'submission'
             
             # Generate questions
-            st.session_state.questions_data = generate_questions(grade=grade, standard=standard, topic=topic, num_questions=num_questions)
-
+            st.session_state.questions_data = generate_questions(grade=grade, standard=standard,standardNum=standardNum, topic=topic, num_questions=num_questions)
+#             st.session_state.questions_data = {
+#   "learning_standard": "CCSS.ELA-LITERACY.W.4.9",
+#   "introduction": "Hey there, baseball fan! We're going to use your interest in baseball to practice some writing skills. Specifically, we're going to focus on drawing evidence from literary or informational texts to support analysis, reflection, and research, as outlined in the CCSS.ELA-LITERACY.W.4.9 standard. Are you ready to hit a homerun with these questions?",
+#   "questions": [
+#     {
+#       "id": "1",
+#       "question": "Imagine your favorite baseball player has just completed the most exciting game of their career. Write a short story about that game. Make sure to include detailed descriptions and events from the game that show why it was so exciting."
+#     },
+#     {
+#       "id": "2",
+#       "question": "If you were to write a research paper about the history of baseball, what are three key points or events you would include and why? Remember to think about the impact these points or events had on the game as we know it today."
+#     }
+#   ]
+# }
             st.session_state.questions = st.session_state.questions_data["questions"]
             st.session_state.user_answers = {q["id"]: "" for q in st.session_state.questions}
-        st.write("Please be patient while the questions are being generated. This may take some time.")
+        st.write("*Please be patient while the questions are being generated. This may take some time.*")
 
     # Display content based on the app state
     if st.session_state.app_state == 'submission':
+        st.markdown(f"##### Learning Standard")
+        st.markdown(f"{st.session_state.questions_data['learning_standard']}")
+        
         # Display introduction
         st.markdown(f"### Introduction")
         st.markdown(f"{st.session_state.questions_data['introduction']}")
@@ -67,7 +84,7 @@ def main():
     
     if st.session_state.app_state == 'results':
         # Fetch evaluations
-        evaluations = generate_evaluations(grade, standard, topic, st.session_state.questions, st.session_state.user_answers)
+        evaluations = generate_evaluations(grade, st.session_state.questions_data['learning_standard'], topic, st.session_state.questions, st.session_state.user_answers)
         
         # Display Thank You message and user responses
         st.write("Thank you for answering all the questions.")
