@@ -53,7 +53,7 @@ def insert_questions_answers_record(
       answer: str,
       grade: str,
       evaluation: str,
-      feedback_grade: str
+      automated_grade: str
     ):
     questions_answers_record = {
         'SessionID': sessionId,
@@ -63,7 +63,7 @@ def insert_questions_answers_record(
         'Answer': answer,
         'Grade': grade,
         'Evaluation': evaluation,
-        'FeedbackGrade': feedback_grade
+        'AutomatedGrade': automated_grade
     }
     questions_answers_table.create(questions_answers_record)
 
@@ -73,13 +73,13 @@ def insert_evaluations_record(
       automated_session: str, 
       final_grade: str,
       final_evaluation: str,
-      feedback_final_grade: str
+      automated_final_grade: str
     ):
     evaluations_record = {
         'SessionID': sessionId,
         'AutomatedSession': automated_session,
         'FinalGrade': final_grade,
         'FinalEvaluation': final_evaluation,
-        'FeedbackFinalGrade': feedback_final_grade
+        'AutomatedFinalGrade': automated_final_grade
     }
     evaluations_table.create(evaluations_record)

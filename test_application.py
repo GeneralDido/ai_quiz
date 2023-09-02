@@ -87,7 +87,7 @@ def test_application():
             answer= answers[int(question['id'])-1]['answer'],
             grade= evaluations['evaluations'][int(question['id'])-1]['grade'],
             evaluation= evaluations['evaluations'][int(question['id'])-1]['explanation'],
-            feedback_grade= answers[int(question['id'])-1]['grade']
+            automated_grade= answers[int(question['id'])-1]['grade']
         )
         print(f"Successfully inserted question/answer record with id {question['id']} into Airtable.")
         print('-------------------')
@@ -98,7 +98,7 @@ def test_application():
         automated_session= 'YES',
         final_grade= evaluations['finalGrade'],
         final_evaluation= evaluations['finalFeedback'],
-        feedback_final_grade= answers[-1]['finalGrade']
+        automated_final_grade= answers[-1]['finalGrade']
     )
     print("Successfully inserted evaluations record into Airtable.")
     print('-------------------')
