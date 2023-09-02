@@ -33,7 +33,7 @@ def generate_questions(grade: str, standard: str, standardNum: str, topic: str, 
 
     Your questions should be appropriate for the age level / Grade level of the student. For example, if the student is in the 4th Grade, you should make questions specifically designed for 4th graders. 
     If the question is for higher Grade levels, for example for 12th grade, you should also check factual knowledge and stimulate critical thinking and creativity (based on the Grade level and Common Core Learning Standard). Generally, avoid generating extremely simple or yes/no questions. Focus on questions that demonstrate an understanding of the topic relative to the learning standard and to the grade level of the student. 
-    Also, please make sure the questions are designed in a way that can be answered optimally from the student in maximum 750 characters or less.
+    Also, please make sure the questions are designed in a way that can be answered optimally from the student in maximum 750 characters or less. 
 
     Remember, educational impact and engagement are key. Make sure to avoid inappropriate or offensive content. Be supportive, encouraging, and accessible with your language.
 
@@ -41,11 +41,11 @@ def generate_questions(grade: str, standard: str, standardNum: str, topic: str, 
     Example: If the student is in 4th grade, the introduction should be written for 4th graders. Do not provide the specific Learning Standard name in the introduction (you should only use it as a guideline when developing your questions for the student).
     Return the response only in JSON format (nothing else), containing the Common Core Learning Standard you generated with its basic definition (for example: "learning_standard": "CCSS.ELA-LITERACY.W.4.9 : Draw evidence from literary or informational texts to support analysis, reflection, and research"), the introduction ("introduction"), and questions. The questions should be an array of objects, each containing a question ("question") and a question id ("id").
     Example JSON response:
-    {'
-        'learning_standard': <CommonCoreLearningStandard> : <Definition>, 
-        'introduction': <Introduction>, 
-        'questions': [
-            {'id': 1, 'question': <question>}, 
+    {
+        "learning_standard": <CommonCoreLearningStandard> : <Definition>, 
+        "introduction": <Introduction>, 
+        "questions": [
+            {"id": 1, "question: <question>}, 
             { ... },
             ...
         ]

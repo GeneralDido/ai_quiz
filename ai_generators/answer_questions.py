@@ -39,10 +39,10 @@ def answer_questions(questions: dict, student: dict):
     - - - - - - - - - - - - - - - - - - - - 
     Example JSON response:
         [
-            {'id': 1, 'answer': <answer>, 'grade': <grade>}, 
-            {'id': ...},
+            {"id": 1, "answer": <answer>, "grade": <grade>}, 
+            {"id": ...},
             ...
-            {'finalGrade': <finalGrade>}
+            {"finalGrade": <finalGrade>}
         ]
     {{~/system}}
     {{#assistant~}}
