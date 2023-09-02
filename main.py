@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from streamlit_star_rating import st_star_rating
 from ai_generators.generate_questions import generate_questions
 from ai_generators.generate_evaluations import generate_evaluations
+from helper.airtable_integration import insert_evaluations_record, insert_feedback_record, insert_questions_answers_record, insert_student_record
+from helper.functions import generate_session_id
 from helper.grades_standards import academic_grades, academic_standards, academic_standards_num, max_num_questions
 
 def main():
@@ -33,23 +35,29 @@ def main():
         st.session_state.app_rating = 0
     if 'user_feedback' not in st.session_state:
         st.session_state.user_feedback = ""
+    if 'saved_data_to_airtable' not in st.session_state:
+        st.session_state.saved_data_to_airtable = False
+    if 'saved_user_feedback' not in st.session_state:
+        st.session_state.saved_user_feedback = False
+    if 'session_id' not in st.session_state:
+        st.session_state.session_id = generate_session_id()
 
     # Input Interface
     with st.sidebar:
         st.markdown("### Made by Dimitris Panouris")
         grade = st.selectbox('Select Grade Level:', academic_grades)
-        standard = st.selectbox('Select Common Core Learning Standard Topic:', academic_standards)
+        standardTopic = st.selectbox('Select Common Core Learning Standard Topic:', academic_standards)
         standardNum = st.selectbox('Select Common Core Learning Standard Number:', academic_standards_num)
         topic = st.text_input('Enter your interest topic:', 'baseball')
         num_questions = st.number_input('Enter the number of questions to generate:', min_value=1, max_value=max_num_questions, value=1, step=1)
-        
+        student_name = st.text_input('Enter your Username:', 'John Doe')
         
         # Change app state based on button press
         if st.button("Generate Questions", on_click=disable_generate_btn, args=(True,), disabled=st.session_state.get("disabled_generate", False)):
             st.session_state.app_state = 'submission'
             
             # Generate questions
-            st.session_state.questions_data = generate_questions(grade=grade, standard=standard,standardNum=standardNum, topic=topic, num_questions=num_questions)
+            st.session_state.questions_data = generate_questions(grade=grade, standard=standardTopic, standardNum=standardNum, topic=topic, num_questions=num_questions)
 
             st.session_state.questions = st.session_state.questions_data["questions"]
             st.session_state.user_answers = {q["id"]: "" for q in st.session_state.questions}
@@ -132,10 +140,43 @@ def main():
         ax.tick_params(axis='both', which='major', labelsize=tick_size)
 
         st.pyplot(fig, use_container_width=True)
-    
-    if st.session_state.app_state == 'results':
 
-        # Enclose the feedback widgets within a form
+    if st.session_state.app_state == 'results':
+        if not st.session_state.saved_data_to_airtable:
+            # Save Session data to Airtable
+            insert_student_record(
+                sessionId= st.session_state.session_id,
+                automated_session= 'NO',
+                student_name= student_name,
+                grade= grade,
+                learning_standard_topic= standardTopic,
+                learning_standard_num= standardNum,
+                num_questions= num_questions,
+                topic= topic,
+                learning_standard= st.session_state.questions_data['learning_standard'],
+                introduction= st.session_state.questions_data['introduction']
+            )
+
+            for question in st.session_state.questions:
+                insert_questions_answers_record(
+                    sessionId= st.session_state.session_id,
+                    automated_session= 'NO',
+                    question_id= question['id'],
+                    question= question['question'],
+                    answer= st.session_state.user_answers[question['id']],
+                    grade= evaluations['evaluations'][int(question['id'])-1]['grade'],
+                    evaluation= evaluations['evaluations'][int(question['id'])-1]['explanation'],
+                )
+
+            insert_evaluations_record(
+                sessionId= st.session_state.session_id,
+                automated_session= 'NO',
+                final_grade= evaluations['finalGrade'],
+                final_evaluation= evaluations['finalFeedback']
+            )
+            st.session_state.saved_data_to_airtable = True
+
+        # User can submit feedback for the app
         with st.form(key="feedback_form"):
             # Display feedback form
 
@@ -149,8 +190,6 @@ def main():
 
             # If the user submits feedback
             if st.form_submit_button("Submit Feedback", on_click=disable_feedback_btn, args=(True,), disabled=st.session_state.get("disabled_feedback", False)):
-                st.write(f"Your Rating: {st.session_state.app_rating} stars")
-                st.write(f"Your Feedback: {st.session_state.user_feedback}")
                 st.session_state.app_state = 'feedback_submitted'
     
     if st.session_state.app_state == 'feedback_submitted':
@@ -158,6 +197,15 @@ def main():
         ## Thank You! :heart:
         We truly appreciate your feedback and the time you took to use our app. Your insights are invaluable to us. We hope you had a pleasant experience and look forward to any future interactions!
         """)
+
+        # Insert feedback into Airtable
+        if not st.session_state.saved_user_feedback:
+            insert_feedback_record(
+                sessionId= st.session_state.session_id,
+                rating= st.session_state.app_rating,
+                feedback= st.session_state.user_feedback
+            )
+            st.session_state.saved_user_feedback = True
 
 
 if __name__ == "__main__":
