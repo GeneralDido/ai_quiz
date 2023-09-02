@@ -1,5 +1,6 @@
 import io
 import sys
+import json
 
 
 # Converts a list of answers to a dictionary with question IDs as keys and answers as values. 
@@ -76,3 +77,7 @@ def capture_output(func):
 def save_to_file(string, file_path):
     with open(file_path, 'w') as f:
         f.write(string)
+
+
+def json_response(response: str):
+    return json.loads(str(response).split("<|im_start|>assistant")[1][:-15])

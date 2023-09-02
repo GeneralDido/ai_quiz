@@ -4,6 +4,8 @@ import openai
 import guidance
 from dotenv import load_dotenv
 
+from helper.functions import json_response
+
 gpt4 = guidance.llms.OpenAI("gpt-4")
 
 load_dotenv()
@@ -49,4 +51,4 @@ def generate_evaluations(grade: str, standard: str, topic: str, questions: list,
         questions=questions,
         answers=answers
     )
-    return json.loads(str(evaluations).split("<|im_start|>assistant")[1][:-15])
+    return json_response(evaluations)
