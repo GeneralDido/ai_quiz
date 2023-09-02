@@ -1,6 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
+from streamlit_star_rating import st_star_rating
 from ai_generators.generate_questions import generate_questions
 from ai_generators.generate_evaluations import generate_evaluations
 from helper.grades_standards import academic_grades, academic_standards, academic_standards_num, max_num_questions
@@ -11,6 +12,8 @@ def main():
         st.session_state["disabled_generate"] = True
     def disable_submit_btn(button):
         st.session_state["disabled_submit"] = True
+    def disable_feedback_btn(button):
+        st.session_state["disabled_feedback"] = True
 
     # Set page title and description
     st.set_page_config(page_title="AI-driven Knowledge Assessment", page_icon=":books:", layout="centered", initial_sidebar_state="expanded")
@@ -26,6 +29,10 @@ def main():
         st.session_state.user_answers = {}
     if 'questions_data' not in st.session_state:
         st.session_state.questions_data = {}
+    if 'app_rating' not in st.session_state:
+        st.session_state.app_rating = 0
+    if 'user_feedback' not in st.session_state:
+        st.session_state.user_feedback = ""
 
     # Input Interface
     with st.sidebar:
@@ -49,7 +56,7 @@ def main():
         st.write("*Please be patient while the questions are being generated. This may take some time.*")
 
     # Display content based on the app state
-    if st.session_state.app_state == 'submission':
+    if st.session_state.app_state in ['submission', 'results', 'feedback_submitted']:
         st.markdown(f"##### Learning Standard")
         st.markdown(f"{st.session_state.questions_data['learning_standard']}")
         
@@ -63,16 +70,16 @@ def main():
             for q in st.session_state.questions:
                 st.write(f"##### {q['question']}")
                 answer_key = f"answer_{q['id']}"
-                st.session_state.user_answers[q["id"]] = st.text_area("Your Answer in Markdown, max: 750 characters", st.session_state.user_answers[q["id"]], key=answer_key,height=180, max_chars=750)
+                st.session_state.user_answers[q["id"]] = st.text_area("Your Answer in Markdown, max: 750 characters", st.session_state.user_answers[q["id"]], key=answer_key,height=200, max_chars=750)
             # Form Submit button
             if st.form_submit_button("Submit", on_click=disable_submit_btn, args=(True,), disabled=st.session_state.get("disabled_submit", False)):
                 st.session_state.app_state = 'results'
             st.write("*Please be patient while the answers are being evaluated. This may take some time.*")
     
-    if st.session_state.app_state == 'results':
+    if st.session_state.app_state in ['results', 'feedback_submitted']:
         # Fetch evaluations
         evaluations = generate_evaluations(grade, st.session_state.questions_data['learning_standard'], topic, st.session_state.questions, st.session_state.user_answers)
-        
+
         # Display Thank You message and user responses
         st.write("Thank you for answering all the questions.")
 
@@ -125,6 +132,32 @@ def main():
         ax.tick_params(axis='both', which='major', labelsize=tick_size)
 
         st.pyplot(fig, use_container_width=True)
+    
+    if st.session_state.app_state == 'results':
+
+        # Enclose the feedback widgets within a form
+        with st.form(key="feedback_form"):
+            # Display feedback form
+
+            st.markdown("We'd appreciate your feedback to improve this app!")
+
+            # Display the star rating widget
+            st.session_state.app_rating = st_star_rating("Rate the app:", maxValue=5, defaultValue=st.session_state.app_rating, key="rating")
+
+            # Feedback form
+            st.session_state.user_feedback = st.text_area("Share your thoughts or suggestions (optional)", st.session_state.user_feedback, height=300, max_chars=1500)
+
+            # If the user submits feedback
+            if st.form_submit_button("Submit Feedback", on_click=disable_feedback_btn, args=(True,), disabled=st.session_state.get("disabled_feedback", False)):
+                st.write(f"Your Rating: {st.session_state.app_rating} stars")
+                st.write(f"Your Feedback: {st.session_state.user_feedback}")
+                st.session_state.app_state = 'feedback_submitted'
+    
+    if st.session_state.app_state == 'feedback_submitted':
+        st.markdown("""
+        ## Thank You! :heart:
+        We truly appreciate your feedback and the time you took to use our app. Your insights are invaluable to us. We hope you had a pleasant experience and look forward to any future interactions!
+        """)
 
 
 if __name__ == "__main__":
