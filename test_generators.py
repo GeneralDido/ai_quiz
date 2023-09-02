@@ -1,5 +1,6 @@
 import os
 import json
+import random
 import openai
 import guidance
 from dotenv import load_dotenv
@@ -7,7 +8,7 @@ from dotenv import load_dotenv
 from ai_generators.generate_questions import generate_questions
 from ai_generators.generate_evaluations import generate_evaluations
 from helper.grades_standards import academic_standards, academic_grades, academic_standards_num, max_num_questions
-from helper.functions import convert_answers_to_dict, check_grades_consistency, capture_output, save_to_file
+from helper.functions import convert_answers_to_dict, check_grades_consistency, capture_output, save_to_file, json_response
 
 
 load_dotenv()
@@ -17,43 +18,45 @@ gpt4 = guidance.llms.OpenAI("gpt-4")
 
 
 # Generates a "student" with a grade, standard, topic, and number of questions.
-def generate_student():
+def generate_student(grade: str, standardTopic: str, standardNum: str, numQuestions: int):
     student = guidance('''
         {{#system~}}        
-        Your task is to generate a relevant topic based on the student's Grade level and a Core Learning Standard.
-        This ia a list of Core Learning Standard topics, choose one: {{academic_standards}}}
-        This is a list of Grades, choose one: {{academic_grades}}
-        This is a list of Core Learning Standard numbers, choose one: {{academic_standards_num}}}
-        Based on the Grade, Core Learning Standard Topic, and Core Learning Standard number, you will generate a specific Learning Standard. As an example: Grade: 4, Core Learning Standard: Writing, Core Learning Standard number: 9 should give: CCSS.ELA-LITERACY.W.4.9
-        You will generate a topic of interest for the student, based on the Grade level of the student and the Core Learning Standard. 
-        Please choose appropriate number of questions for the topic, ranging from 1 to a maximum of {{max_num_questions}}.
-        
-        The topic of interest should be relevant to both the Core Learning Standard and the Grade level, for example, if the student is in 4th grade, the topic should be relevant to 4th graders.
-        Please think of new examples to provide each time. Avoid using the given examples when creating the output. Only create unique outputs based on the selections made.                       
-        Return the response only in JSON format (nothing else). 
-        - - - - - - - - - - - - - - - - - - - - 
-        Example JSON response:
-        {
-          "grade": "4",
-          "standard_topic": "Writing",
-          "standard_num": "9",
-          "learning_standard": "CCSS.ELA-LITERACY.W.4.9",
-          "topic": "Baseball",
-          "num_questions": 3
-        }
+            Your task is to generate a relevant topic based on the student's Grade level and a specific Core Learning Standard, which you will also generate.
+            This is the Core Learning Standard Topic: {{standardTopic}}
+            This is the student Grade level: {{grade}}
+            This is the Core Learning Standard number: {{standardNum}}
+            You will generate {{numQuestions}} questions.
+                        
+            Based on the Grade, Core Learning Standard Topic, and Core Learning Standard number, you will generate a specific Core Learning Standard. 
+            As an example: Grade: 4, Core Learning Standard: Writing, Core Learning Standard number: 9 should give: CCSS.ELA-LITERACY.W.4.9
+            
+            You will generate a topic of interest for the student, based on the Grade level of the student and the Core Learning Standard. 
+            The topic of interest should be relevant to the potential student, for example, if the student is in 4th grade, the topic should be relevant to 4th graders.
+            Please think of new examples to provide each time. Avoid using the given examples when creating the output. Only create unique outputs based on the selections made.                       
+            Return the response only in JSON format (nothing else). 
+            - - - - - - - - - - - - - - - - - - - - 
+            Example JSON response:
+            {
+                "grade": "4",
+                "standard_topic": "Writing",
+                "standard_num": "9",
+                "learning_standard": "CCSS.ELA-LITERACY.W.4.9",
+                "topic": "Baseball",
+                "num_questions": 3
+            }
         {{~/system}}
         {{#assistant~}}
-              {{gen 'generate_student' temperature=0.7 max_tokens=750}}
+            {{gen 'student' temperature=0.7 max_tokens=750}}
         {{~/assistant}}
     ''', llm=gpt4)
 
     student = student(
-        academic_standards=academic_standards,
-        academic_standards_num=academic_standards_num,
-        academic_grades=academic_grades,
-        max_num_questions=max_num_questions
+        grade=grade,
+        standardTopic=standardTopic,
+        standardNum=standardNum,
+        numQuestions=numQuestions
     )
-    return json.loads(str(student).split("<|im_start|>assistant")[1][:-15])
+    return json_response(student)
 
 
 # Answers questions based on a student's grade, standard, topic, and number of questions. Provides potential grade for each answer and a potential final grade.
@@ -91,14 +94,14 @@ def answer_questions(questions: dict, student: dict):
         standard=student['learning_standard'],
         questions=questions['questions']
     )
-    return json.loads(str(answer_questions).split("<|im_start|>assistant")[1][:-15])
+    return json_response(answer_questions)
 
 
 def test():
     print('-------------------')
     print('START OF TEST')
 
-    student = generate_student()
+    student = generate_student(grade=random.choice(academic_grades), standardTopic=random.choice(academic_standards), standardNum=random.choice(academic_standards_num), numQuestions=random.randint(1, max_num_questions))
     print('STUDENT: ')
     print(student)
     print('-------------------')
