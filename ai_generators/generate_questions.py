@@ -1,16 +1,17 @@
 import os
-import json
 import openai
 import guidance
 from dotenv import load_dotenv
 
 from helper.functions import json_response
 
-gpt4 = guidance.llms.OpenAI("gpt-4")
-
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+gpt4 = guidance.llms.OpenAI("gpt-4")
+
+
+# Generates questions based on a student's grade, standard, topic, and number of questions.
 def generate_questions(grade: str, standard: str, standardNum: str, topic: str, num_questions: int):
     questions = guidance('''
     {{#system~}}
@@ -39,6 +40,16 @@ def generate_questions(grade: str, standard: str, standardNum: str, topic: str, 
     You will also generate an introduction to the questions that provides context for the student. This introduction should be short and should provide a brief overview of the topic and the questions that follow. Make sure it is written in a language appropriate for the Grade level of the student. 
     Example: If the student is in 4th grade, the introduction should be written for 4th graders. Do not provide the specific Learning Standard name in the introduction (you should only use it as a guideline when developing your questions for the student).
     Return the response only in JSON format (nothing else), containing the Common Core Learning Standard you generated with its basic definition (for example: "learning_standard": "CCSS.ELA-LITERACY.W.4.9 : Draw evidence from literary or informational texts to support analysis, reflection, and research"), the introduction ("introduction"), and questions. The questions should be an array of objects, each containing a question ("question") and a question id ("id").
+    Example JSON response:
+    {'
+        'learning_standard': <CommonCoreLearningStandard> : <Definition>, 
+        'introduction': <Introduction>, 
+        'questions': [
+            {'id': 1, 'question': <question>}, 
+            { ... },
+            ...
+        ]
+    }                  
     {{~/system}}
     {{#assistant~}}
             {{gen 'questions' temperature=0.7 max_tokens=2200}}

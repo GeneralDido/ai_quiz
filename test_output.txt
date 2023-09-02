@@ -1,18 +1,41 @@
 -------------------
-START OF TEST
+START OF AUTOMATED TEST
+-------------------
+START OF AI TEST
 STUDENT: 
-{'grade': '7', 'standard_topic': 'Writing', 'standard_num': '1', 'learning_standard': 'CCSS.ELA-LITERACY.W.7.1', 'topic': 'Space exploration', 'num_questions': 4}
+{'grade': '4', 'standard_topic': 'Reading: Informational Text', 'standard_num': '5', 'learning_standard': 'CCSS.ELA-LITERACY.RI.4.5', 'topic': 'The Life Cycle of a Butterfly', 'num_questions': 3}
 -------------------
 QUESTIONS: 
-{'learning_standard': 'CCSS.ELA-LITERACY.W.7.1 : Write arguments to support claims with clear reasons and relevant evidence', 'introduction': "In this exercise, we'll be exploring the exciting world of space exploration. You'll be asked to write arguments supporting different aspects of the topic. Remember, it's not just about stating your opinion - you need to back it up with clear reasons and relevant evidence! Let's dive into the mysteries of the universe!", 'questions': [{'id': 1, 'question': 'Imagine you are part of a space agency planning to send a manned mission to Mars. Write an argumentative paragraph explaining why this mission is worth the investment, using clear reasons and relevant evidence.'}, {'id': 2, 'question': 'Some people believe that we should focus on solving problems on Earth before exploring space. Write an argumentative paragraph contradicting this viewpoint, using clear reasons and relevant evidence.'}, {'id': 3, 'question': 'Write an argumentative paragraph promoting the idea of building a permanent settlement on the Moon. What benefits could this bring? Remember to use clear reasons and relevant evidence.'}, {'id': 4, 'question': 'The search for extraterrestrial life is a significant part of space exploration. Write an argumentative paragraph explaining why this search is important, using clear reasons and relevant evidence.'}]}
+{'learning_standard': 'CCSS.ELA-LITERACY.RI.4.5 : Describe the overall structure (e.g., chronology, comparison, cause/effect, problem/solution) of events, ideas, concepts, or information in a text or part of a text.', 'introduction': "Today, we're going to explore the life cycle of a butterfly! We'll be examining the way information is organized in a text and the sequence of events that occur in the life cycle of this fascinating creature. Keep in mind, our goal is to understand how the author structured the information about the butterfly's life cycle.", 'questions': [{'id': 1, 'question': "Can you identify and describe the overall structure of the text about the butterfly's life cycle? Is it arranged in a chronological order, comparison, cause/effect, or problem/solution manner?"}, {'id': 2, 'question': "How does the author transition from one stage of the butterfly's life cycle to the next? Does this structure make it easier to understand the changes that occur throughout the butterfly's life?"}, {'id': 3, 'question': 'If you were to explain the life cycle of a butterfly to a friend, how would you structure the information? Would you choose the same structure as the author of our text, or would you present it differently?'}]}
 -------------------
 ANSWER QUESTIONS: 
-[{'id': 1, 'answer': "A mission to Mars is something that we should totally do. It's like super important for science and stuff. Plus, it would be really cool. I think it would be a good way to spend money.", 'grade': 1}, {'id': 2, 'answer': "While it's true that we have issues on Earth, it doesn't mean that we can't explore space at the same time. Space exploration can provide solutions to many problems we face on Earth, such as climate change and resource scarcity. For instance, technologies developed for space travel have also been applied to improve our life on Earth, like solar power and water purification systems. Therefore, space exploration is not a distraction, but a complementary approach to solving our earthly problems.", 'grade': 4}, {'id': 3, 'answer': 'Building a settlement on the Moon is a good idea because it could serve as a stepping stone for further exploration of the solar system. It would provide a place to test technologies and practices for living on other planets. The Moon is rich in resources, such as helium-3, a potential fuel for nuclear fusion, which could help us meet our energy needs in the future. Additionally, a lunar base could boost tourism and create new industries, contributing to economic growth.', 'grade': 5}, {'id': 4, 'answer': "Looking for aliens is important because, um, it would be cool to find them. Plus, it would mean we're not alone in the universe. That's like a big deal, right?", 'grade': 2}, {'finalGrade': 3}]
+[{'id': 1, 'answer': "The text about the butterfly's life cycle is in chronological order. It starts with the egg, then the caterpillar, then the chrysalis, and lastly the butterfly.", 'grade': 5}, {'id': 2, 'answer': "The author uses words like 'then' and 'next' to move from one stage to another. I think it helps because it shows the order of how things happen.", 'grade': 4}, {'id': 3, 'answer': "I would tell it the same way because it's easy to understand. But maybe I would also draw a picture to show it clearer.", 'grade': 3}, {'finalGrade': 4}]
 -------------------
 EVALUATIONS: 
-{'evaluations': [{'id': 1, 'grade': 2, 'explanation': "Your answer does touch on the topic, but it lacks depth and specific examples. While you mention it's important for science, can you explain why? What specific scientific advancements might we achieve? Also, try to avoid informal language like 'stuff'. Remember to use clear reasons and relevant evidence in your argument."}, {'id': 2, 'grade': 5, 'explanation': 'Excellent job! You clearly explained how space exploration can contribute to solving problems on Earth and provided relevant examples. You clearly understood the task and provided a well thought-out argument. Keep up the good work!'}, {'id': 3, 'grade': 5, 'explanation': 'Another excellent response! You provided clear reasons and relevant evidence for your argument. You explained how a lunar base could be beneficial for both space exploration and economic growth. Great job on providing specific examples!'}, {'id': 4, 'grade': 2, 'explanation': "While your answer is on topic, it lacks depth. You mentioned it would be 'cool' to find aliens, but why is it scientifically important? What could we learn from discovering extraterrestrial life? Also, try to avoid informal language. Always strive to provide clear reasons and relevant evidence in your arguments."}], 'finalGrade': 3.5, 'finalFeedback': "Overall, you've demonstrated a good understanding of the topic. You've done an excellent job providing detailed and thoughtful arguments in some of your responses. However, in some answers, you need to provide more depth and avoid using informal language. Remember, strong arguments are grounded in clear reasoning and relevant evidence. Keep working on developing your ideas further!"}
+{'evaluations': [{'id': 1, 'grade': 5, 'explanation': "Excellent job! You correctly identified the text's structure as chronological order. You also clearly described the sequence of the butterfly's life cycle, showing a good understanding of the topic. Keep up the good work!"}, {'id': 2, 'grade': 4, 'explanation': "Good job! You correctly identified how the author uses transitional words like 'then' and 'next' to move from one stage of the life cycle to the next. It would have been even better if you could provide specific examples from the text. Keep practicing your reading skills!"}, {'id': 3, 'grade': 4, 'explanation': "Good job! I like that you would stick to the chronological structure because it's easy to understand. Your idea to draw a picture to make it clearer is also great. It would be helpful if you could explain why you think the picture would help in understanding the life cycle better. Keep up the creativity!"}], 'finalGrade': 4.3, 'finalFeedback': "Great job overall! You showed a good understanding of the text structure and the butterfly's life cycle. You were also creative in your approach to explaining the life cycle to a friend. Remember to provide more detailed explanations and specific examples from the text in your answers. Keep up the good work and continue practicing your reading skills!"}
 -------------------
 Grades are consistent.
 -------------------
-END OF TEST
+END OF AI TEST
+-------------------
+START OF AIRTABLE INTEGRATION
+-------------------
+Inserting student record into Airtable...
+Successfully inserted student record into Airtable.
+-------------------
+Inserting question/answer record with id: 1 into Airtable...
+Successfully inserted question/answer record with id 1 into Airtable.
+-------------------
+Inserting question/answer record with id: 2 into Airtable...
+Successfully inserted question/answer record with id 2 into Airtable.
+-------------------
+Inserting question/answer record with id: 3 into Airtable...
+Successfully inserted question/answer record with id 3 into Airtable.
+-------------------
+Inserting evaluations record into Airtable...
+Successfully inserted evaluations record into Airtable.
+-------------------
+END OF AIRTABLE INTEGRATION
+-------------------
+END OF AUTOMATED TEST
 -------------------

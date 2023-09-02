@@ -1,6 +1,8 @@
 import io
 import sys
 import json
+import secrets
+from faker import Faker
 
 
 # Converts a list of answers to a dictionary with question IDs as keys and answers as values. 
@@ -57,27 +59,23 @@ def check_grades_consistency(answers, evaluations):
     return True
 
 
-def capture_output(func):
-    # Create a StringIO object to capture the output
-    output = io.StringIO()
-
-    # Redirect stdout to the StringIO object
-    sys.stdout = output
-
-    # Call the function
-    func()
-
-    # Reset stdout to its original value
-    sys.stdout = sys.__stdout__
-
-    # Return the captured output as a string
-    return output.getvalue()
-
-
+# Saves a string to a file.
 def save_to_file(string, file_path):
     with open(file_path, 'w') as f:
         f.write(string)
 
 
+# Generates a JSON response from the output of the AI.
 def json_response(response: str):
     return json.loads(str(response).split("<|im_start|>assistant")[1][:-15])
+
+
+# Generates a random session ID/key.
+def generate_session_id(length=16):
+    return secrets.token_hex(length)
+
+
+# Generates a random student name.
+def generate_student_name():
+    fake = Faker()
+    return fake.name()

@@ -1,17 +1,17 @@
 import os
-import json
 import openai
 import guidance
 from dotenv import load_dotenv
 
 from helper.functions import json_response
 
-gpt4 = guidance.llms.OpenAI("gpt-4")
-
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+gpt4 = guidance.llms.OpenAI("gpt-4")
 
+
+# Generates evaluations based on a student's grade, Common Core Learning Standard, topic, questions, and students' answers.
 def generate_evaluations(grade: str, standard: str, topic: str, questions: list, answers: dict):
     evaluations = guidance('''
         {{#system~}}
