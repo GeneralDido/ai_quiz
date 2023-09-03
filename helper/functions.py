@@ -1,5 +1,4 @@
-import io
-import sys
+import streamlit as st
 import json
 import secrets
 from faker import Faker
@@ -68,6 +67,15 @@ def save_to_file(string, file_path):
 # Generates a JSON response from the output of the AI.
 def json_response(response: str):
     return json.loads(str(response).split("<|im_start|>assistant")[1][:-15])
+
+
+# Disable buttons after click
+def disable_generate_btn(button):
+    st.session_state["disabled_generate"] = True
+def disable_submit_btn(button):
+    st.session_state["disabled_submit"] = True
+def disable_feedback_btn(button):
+    st.session_state["disabled_feedback"] = True
 
 
 # Generates a random session ID/key.

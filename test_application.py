@@ -4,10 +4,11 @@ from ai_generators.answer_questions import answer_questions
 from ai_generators.generate_questions import generate_questions
 from ai_generators.generate_evaluations import generate_evaluations
 from ai_generators.generate_topic import generate_topic
+from config import GRADE, COMMON_CORE_LEARNING_STANDARD_TOPICS, COMMON_CORE_LEARNING_STANDARD_NUM
 
-from helper.grades_standards import academic_standards, academic_grades, academic_standards_num, max_num_questions
+from config import MAX_NUM_QUESTIONS
 from helper.functions import convert_answers_to_dict, check_grades_consistency, generate_session_id, generate_student_name
-from helper.airtable_integration import insert_student_record, insert_questions_answers_record, insert_evaluations_record
+from db.airtable_integration import insert_student_record, insert_questions_answers_record, insert_evaluations_record
 
 
 def test_application():
@@ -16,10 +17,10 @@ def test_application():
 
     print('-------------------')
     print('START OF AI TEST')
-    grade = random.choice(academic_grades)
-    standardTopic = random.choice(academic_standards)
-    standardNum = random.choice(academic_standards_num)
-    numQuestions = random.randint(1, max_num_questions)
+    grade = random.choice(GRADE)
+    standardTopic = random.choice(COMMON_CORE_LEARNING_STANDARD_TOPICS)
+    standardNum = random.choice(COMMON_CORE_LEARNING_STANDARD_NUM)
+    numQuestions = random.randint(1, MAX_NUM_QUESTIONS)
 
     student = generate_topic(grade=grade, standardTopic=standardTopic, standardNum=standardNum, numQuestions=numQuestions)
     print('STUDENT: ')

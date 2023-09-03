@@ -22,7 +22,7 @@ def generate_evaluations(grade: str, standard: str, topic: str, questions: list,
         The grade should be appropriate for the Grade level of the student, for example if the student is in 4th grade, you should grade the answer as if it was written by a 4th grader.
         The quality of the answer should be rated on a scale from 0 to 5, with 0: Did not answer, 1: Unacceptable, 2: Needs Improvement, 3: Satisfactory, 4: Good and 5: Excellent. Rate the answer based on multiple factors, including the student's Grade level, understanding of the topic and the question, the depth and quality of response for the Grade level and the appropriate Learning Standard.
         In addition to the evaluation, you should provide an explanation for your evaluation that is relevant to the student's grade level and response. Use appropriate languge based on the Grade level. Your explanation should be respectful, helpful, insightful, and suggest possible improvements.
-        Finally, you should calculate a total grade for the student based on all their responses and provide final feedback.
+        Finally, you should calculate a total grade for the student based on all their responses (take the average of all grades) and provide final feedback.
         If the user has not responded at all to the particular question or has responded randomly, please address it in a nice, instructive way. Remember, your goal is to provide a supportive and constructive learning experience for the student, not just merely grade responses. Be respectful, insightful, creative, and thorough.
         
         Return the response only in JSON format (nothing else). Example JSON response:

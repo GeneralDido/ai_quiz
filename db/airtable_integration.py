@@ -1,21 +1,18 @@
-import os
-from dotenv import load_dotenv
 from pyairtable import Api, retry_strategy
 
-
-load_dotenv()
-AIRTABLE_API_KEY = os.getenv('AIRTABLE_API_KEY', "")
-AIRTABLE_BASE_ID = os.getenv('AIRTABLE_BASE_ID', "")
-STUDENT_TABLE = os.getenv('STUDENT_TABLE', "")
-QUESTIONS_ANSWERS_TABLE = os.getenv('QUESTIONS_ANSWERS_TABLE', "")
-EVALUATIONS_TABLE = os.getenv('EVALUATIONS_TABLE', "")
-FEEDBACK_TABLE = os.getenv('FEEDBACK_TABLE', "")
+from config import AIRTABLE_API_KEY
+from config import AIRTABLE_BASE_ID
+from config import STUDENT_TABLE
+from config import QUESTIONS_ANSWERS_TABLE
+from config import EVALUATIONS_TABLE
+from config import FEEDBACK_TABLE
 
 airtable_api = Api(AIRTABLE_API_KEY, retry_strategy=retry_strategy(total=2))
 student_table = airtable_api.table(AIRTABLE_BASE_ID, STUDENT_TABLE)
 questions_answers_table = airtable_api.table(AIRTABLE_BASE_ID, QUESTIONS_ANSWERS_TABLE)
 evaluations_table = airtable_api.table(AIRTABLE_BASE_ID, EVALUATIONS_TABLE)
 feedback_table = airtable_api.table(AIRTABLE_BASE_ID, FEEDBACK_TABLE)
+
 
 def insert_student_record(
       sessionId: str, 
