@@ -37,7 +37,7 @@ def generate_questions(grade: str, standard: str, standardNum: str, topic: str, 
 
     Remember, educational impact and engagement are key. Make sure to avoid inappropriate or offensive content. Be supportive, encouraging, and accessible with your language.
 
-    You will also generate an introduction to the questions that provides context for the student. This introduction should be short and should provide a brief overview of the topic and the questions that follow. Make sure it is written in a language appropriate for the Grade level of the student. 
+    You will also generate an introduction to the questions that provides context for the student. This introduction should be short and should provide a brief overview of the topic and the questions that follow. Make sure it is written in a language appropriate for the Grade level of the student. Depending on the nature of the question, you can be specific with what you ask from the student, for example, which passage from an author to read.
     Example: If the student is in 4th grade, the introduction should be written for 4th graders. Do not provide the specific Learning Standard name in the introduction (you should only use it as a guideline when developing your questions for the student).
     Return the response only in JSON format (nothing else), containing the Common Core Learning Standard you generated with its basic definition (for example: "learning_standard": "CCSS.ELA-LITERACY.W.4.9 : Draw evidence from literary or informational texts to support analysis, reflection, and research"), the introduction ("introduction"), and questions. The questions should be an array of objects, each containing a question ("question") and a question id ("id").
     Example JSON response:
@@ -45,7 +45,7 @@ def generate_questions(grade: str, standard: str, standardNum: str, topic: str, 
         "learning_standard": <CommonCoreLearningStandard> : <Definition>, 
         "introduction": <Introduction>, 
         "questions": [
-            {"id": 1, "question: <question>}, 
+            {"id": 1, "question": <question>}, 
             { ... },
             ...
         ]
