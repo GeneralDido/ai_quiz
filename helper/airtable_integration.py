@@ -19,7 +19,7 @@ feedback_table = airtable_api.table(AIRTABLE_BASE_ID, FEEDBACK_TABLE)
 
 def insert_student_record(
       sessionId: str, 
-      automated_session: str, 
+      session: str, 
       student_name: str, 
       grade: str,
       learning_standard_topic: str,
@@ -27,11 +27,12 @@ def insert_student_record(
       num_questions: int,
       topic: str,
       learning_standard: str,
+      learning_standard_definition: str,
       introduction: str
     ):
     student_record = {
         'SessionID': sessionId,
-        'AutomatedSession': automated_session,
+        'Session': session,
         'StudentName': student_name,
         'GradeLevel': grade,
         'LearningStandardTopic': learning_standard_topic,
@@ -39,6 +40,7 @@ def insert_student_record(
         'NumQuestions': num_questions,
         'Topic of Interest': topic,
         'CommonCoreLearningStandard': learning_standard,
+        'CommonCoreLearningStandardDefinition': learning_standard_definition,
         'QuestionsIntroduction': introduction,
   }
     student_table.create(student_record)
@@ -47,7 +49,7 @@ def insert_student_record(
 
 def insert_questions_answers_record(
       sessionId: str, 
-      automated_session: str, 
+      session: str, 
       question_id: str,
       question: str,
       answer: str,
@@ -57,7 +59,7 @@ def insert_questions_answers_record(
     ):
     questions_answers_record = {
         'SessionID': sessionId,
-        'AutomatedSession': automated_session,
+        'Session': session,
         'QuestionID': question_id,
         'Question': question,
         'Answer': answer,
@@ -70,14 +72,14 @@ def insert_questions_answers_record(
 
 def insert_evaluations_record(
       sessionId: str, 
-      automated_session: str, 
+      session: str, 
       final_grade: str,
       final_evaluation: str,
       automated_final_grade: str = None
     ):
     evaluations_record = {
         'SessionID': sessionId,
-        'AutomatedSession': automated_session,
+        'Session': session,
         'FinalGrade': final_grade,
         'FinalEvaluation': final_evaluation,
         'AutomatedFinalGrade': automated_final_grade

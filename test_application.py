@@ -64,7 +64,7 @@ def test_application():
     print("Inserting student record into Airtable...")
     insert_student_record(
         sessionId= session_id,
-        automated_session= 'YES',
+        session= 'Automated',
         student_name= generate_student_name(),
         grade= grade,
         learning_standard_topic= standardTopic,
@@ -72,6 +72,7 @@ def test_application():
         num_questions= numQuestions,
         topic= student['topic'],
         learning_standard= student['learning_standard'],
+        learning_standard_definition= student['learning_standard_definition'],
         introduction= questions['introduction']
     )
     print("Successfully inserted student record into Airtable.")
@@ -81,7 +82,7 @@ def test_application():
         print(f"Inserting question/answer record with id: {question['id']} into Airtable...")
         insert_questions_answers_record(
             sessionId= session_id,
-            automated_session= 'YES',
+            session= 'Automated',
             question_id= question['id'],
             question= question['question'],
             answer= answers[int(question['id'])-1]['answer'],
@@ -95,7 +96,7 @@ def test_application():
     print("Inserting evaluations record into Airtable...")
     insert_evaluations_record(
         sessionId= session_id,
-        automated_session= 'YES',
+        session= 'Automated',
         final_grade= evaluations['finalGrade'],
         final_evaluation= evaluations['finalFeedback'],
         automated_final_grade= answers[-1]['finalGrade']

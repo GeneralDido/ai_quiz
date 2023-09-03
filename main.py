@@ -146,21 +146,22 @@ def main():
             # Save Session data to Airtable
             insert_student_record(
                 sessionId= st.session_state.session_id,
-                automated_session= 'NO',
+                session= 'User',
                 student_name= student_name,
                 grade= grade,
                 learning_standard_topic= standardTopic,
                 learning_standard_num= standardNum,
                 num_questions= num_questions,
                 topic= topic,
-                learning_standard= st.session_state.questions_data['learning_standard'],
+                learning_standard= st.session_state.questions_data['learning_standard'].split(':')[0],
+                learning_standard_definition= st.session_state.questions_data['learning_standard'].split(':')[1],
                 introduction= st.session_state.questions_data['introduction']
             )
 
             for question in st.session_state.questions:
                 insert_questions_answers_record(
                     sessionId= st.session_state.session_id,
-                    automated_session= 'NO',
+                    session= 'User',
                     question_id= question['id'],
                     question= question['question'],
                     answer= st.session_state.user_answers[question['id']],
@@ -170,7 +171,7 @@ def main():
 
             insert_evaluations_record(
                 sessionId= st.session_state.session_id,
-                automated_session= 'NO',
+                session= 'User',
                 final_grade= evaluations['finalGrade'],
                 final_evaluation= evaluations['finalFeedback']
             )

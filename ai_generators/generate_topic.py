@@ -21,8 +21,8 @@ def generate_topic(grade: str, standardTopic: str, standardNum: str, numQuestion
             This is the Core Learning Standard number: {{standardNum}}
             You will generate {{numQuestions}} questions.
                         
-            Based on the Grade, Core Learning Standard Topic, and Core Learning Standard number, you will generate a specific Core Learning Standard. 
-            As an example: Grade: 4, Core Learning Standard: Writing, Core Learning Standard number: 9 should give: CCSS.ELA-LITERACY.W.4.9
+            Based on the Grade, Core Learning Standard Topic, and Core Learning Standard number, you will generate a specific Core Learning Standard and its definition. 
+            As an example: Grade: 4, Core Learning Standard: Writing, Core Learning Standard number: 9 should give: CCSS.ELA-LITERACY.W.4.9 and definition: Draw evidence from literary or informational texts to support analysis, reflection, and research.
             
             You will generate a topic of interest for the student, based on the Grade level of the student and the Core Learning Standard. 
             The topic of interest should be relevant to the potential student, for example, if the student is in 4th grade, the topic should be relevant to 4th graders.
@@ -35,6 +35,7 @@ def generate_topic(grade: str, standardTopic: str, standardNum: str, numQuestion
                 "standard_topic": "Writing",
                 "standard_num": "9",
                 "learning_standard": "CCSS.ELA-LITERACY.W.4.9",
+                "learning_standard_definition": "Draw evidence from literary or informational texts to support analysis, reflection, and research",
                 "topic": "Baseball",
                 "num_questions": 3
             }
