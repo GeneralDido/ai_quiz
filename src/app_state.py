@@ -8,6 +8,7 @@ def initialize_session_state():
         "questions": [],
         "user_answers": {},
         "questions_data": {},
+        "evaluations": {},
         "app_rating": 0,
         "user_feedback": "",
         "saved_data_to_airtable": False,

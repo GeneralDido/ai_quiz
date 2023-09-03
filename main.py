@@ -1,11 +1,14 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 
 from streamlit_star_rating import st_star_rating
+
 from ai_generators.generate_questions import generate_questions
 from ai_generators.generate_evaluations import generate_evaluations
-from db.airtable_integration import insert_evaluations_record, insert_feedback_record, insert_questions_answers_record, insert_student_record
+
+from db.AirtableManager import AirtableManager
+
 from helper.functions import disable_feedback_btn, disable_generate_btn, disable_submit_btn
+
 from src.app_state import initialize_session_state
 from src.bar_chart import visualise_bar_chart
 from src.input_interface import get_user_input
@@ -68,7 +71,7 @@ def main():
     
     if st.session_state.app_state in ['results', 'feedback_submitted']:
         # Fetch evaluations
-        evaluations = generate_evaluations(grade, st.session_state.questions_data['learning_standard'], topic, st.session_state.questions, st.session_state.user_answers)
+        st.session_state.evaluations = generate_evaluations(grade, st.session_state.questions_data['learning_standard'], topic, st.session_state.questions, st.session_state.user_answers)
 
         # Display Thank You message and user responses
         st.write("Thank you for answering all the questions.")
@@ -83,7 +86,7 @@ def main():
                 st.markdown(f"**{st.session_state.user_answers[q['id']]}**")
 
                 # Fetch the corresponding evaluation for the question
-                eval_item = next((item for item in evaluations['evaluations'] if item["id"] == q["id"]), None)
+                eval_item = next((item for item in st.session_state.evaluations['evaluations'] if item["id"] == q["id"]), None)
                 if eval_item:
                     
                     st.write(f"##### Grade: {eval_item['grade']}")
@@ -94,55 +97,39 @@ def main():
                     st.write("Error: Evaluation not found for this question.")
         with st.expander(f"Final Feedback - Click to Expand", expanded=True):
             # Display final feedback and grade
-            st.write(f"##### Final Grade: {evaluations['finalGrade']}")
+            st.write(f"##### Final Grade: {st.session_state.evaluations['finalGrade']}")
 
             st.write("##### Final Feedback:")
-            st.write(f"{evaluations['finalFeedback']}")
+            st.write(f"{st.session_state.evaluations['finalFeedback']}")
 
         # Visualize grades using a bar chart
         question_ids = [str(q["id"]) for q in st.session_state.questions]
-        grades = [item['grade'] for item in evaluations['evaluations']]
+        grades = [item['grade'] for item in st.session_state.evaluations['evaluations']]
         
         # Add the final grade to the grades list
         question_ids.append("Final")
-        grades.append(evaluations['finalGrade'])
+        grades.append(st.session_state.evaluations['finalGrade'])
 
         visualise_bar_chart(question_ids, grades)
 
     if st.session_state.app_state == 'results':
         if not st.session_state.saved_data_to_airtable:
+            
             # Save Session data to Airtable
-            insert_student_record(
+            airtable_manager = AirtableManager(
                 sessionId= st.session_state.session_id,
                 session= 'User',
-                student_name= st.session_state.student['student_name'],
-                grade= st.session_state.student['grade'],
-                learning_standard_topic= st.session_state.student['standard_topic'],
-                learning_standard_num= st.session_state.student['standard_num'],
-                num_questions= st.session_state.student['num_questions'],
-                topic= st.session_state.student['topic'],
-                learning_standard= st.session_state.questions_data['learning_standard'].split(':')[0],
-                learning_standard_definition= st.session_state.questions_data['learning_standard'].split(':')[1],
-                introduction= st.session_state.questions_data['introduction']
+                student= st.session_state.student,
+                questions= st.session_state.questions_data,
+                answers= st.session_state.user_answers,
+                evaluations= st.session_state.evaluations
             )
 
+            airtable_manager.insert_student_record()
             for question in st.session_state.questions:
-                insert_questions_answers_record(
-                    sessionId= st.session_state.session_id,
-                    session= 'User',
-                    question_id= question['id'],
-                    question= question['question'],
-                    answer= st.session_state.user_answers[question['id']],
-                    grade= evaluations['evaluations'][int(question['id'])-1]['grade'],
-                    evaluation= evaluations['evaluations'][int(question['id'])-1]['explanation'],
-                )
+                airtable_manager.insert_questions_answers_record(question_id= question['id'])
+            airtable_manager.insert_evaluations_record()
 
-            insert_evaluations_record(
-                sessionId= st.session_state.session_id,
-                session= 'User',
-                final_grade= evaluations['finalGrade'],
-                final_evaluation= evaluations['finalFeedback']
-            )
             st.session_state.saved_data_to_airtable = True
 
         # User can submit feedback for the app

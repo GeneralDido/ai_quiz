@@ -7,8 +7,8 @@ from ai_generators.generate_topic import generate_topic
 from config import GRADE, COMMON_CORE_LEARNING_STANDARD_TOPICS, COMMON_CORE_LEARNING_STANDARD_NUM
 
 from config import MAX_NUM_QUESTIONS
+from db.AirtableManager import AirtableManager
 from helper.functions import convert_answers_to_dict, check_grades_consistency, generate_session_id, generate_student_name
-from db.airtable_integration import insert_student_record, insert_questions_answers_record, insert_evaluations_record
 
 
 def test_application():
@@ -21,8 +21,11 @@ def test_application():
     standardTopic = random.choice(COMMON_CORE_LEARNING_STANDARD_TOPICS)
     standardNum = random.choice(COMMON_CORE_LEARNING_STANDARD_NUM)
     numQuestions = random.randint(1, MAX_NUM_QUESTIONS)
+    session_id = generate_session_id()
+    student_name= generate_student_name()
 
     student = generate_topic(grade=grade, standardTopic=standardTopic, standardNum=standardNum, numQuestions=numQuestions)
+    student['student_name'] = student_name
     print('STUDENT: ')
     print(student)
     print('-------------------')
@@ -61,47 +64,31 @@ def test_application():
 
     print('START OF AIRTABLE INTEGRATION')
     print('-------------------')
-    session_id = generate_session_id()
-    print("Inserting student record into Airtable...")
-    insert_student_record(
+
+
+    airtable_manager = AirtableManager(
         sessionId= session_id,
         session= 'Automated',
-        student_name= generate_student_name(),
-        grade= grade,
-        learning_standard_topic= standardTopic,
-        learning_standard_num= standardNum,
-        num_questions= numQuestions,
-        topic= student['topic'],
-        learning_standard= student['learning_standard'],
-        learning_standard_definition= student['learning_standard_definition'],
-        introduction= questions['introduction']
+        student= student,
+        questions= questions,
+        answers= answers,
+        evaluations= evaluations
     )
+    
+    print("Inserting student record into Airtable...")
+    airtable_manager.insert_student_record()
     print("Successfully inserted student record into Airtable.")
     print('-------------------')
 
     for question in questions['questions']:
         print(f"Inserting question/answer record with id: {question['id']} into Airtable...")
-        insert_questions_answers_record(
-            sessionId= session_id,
-            session= 'Automated',
-            question_id= question['id'],
-            question= question['question'],
-            answer= answers[int(question['id'])-1]['answer'],
-            grade= evaluations['evaluations'][int(question['id'])-1]['grade'],
-            evaluation= evaluations['evaluations'][int(question['id'])-1]['explanation'],
-            automated_grade= answers[int(question['id'])-1]['grade']
-        )
+        airtable_manager.insert_questions_answers_record(question_id= question['id'])
         print(f"Successfully inserted question/answer record with id {question['id']} into Airtable.")
         print('-------------------')
-
+    
     print("Inserting evaluations record into Airtable...")
-    insert_evaluations_record(
-        sessionId= session_id,
-        session= 'Automated',
-        final_grade= evaluations['finalGrade'],
-        final_evaluation= evaluations['finalFeedback'],
-        automated_final_grade= answers[-1]['finalGrade']
-    )
+    airtable_manager.insert_evaluations_record()
+    
     print("Successfully inserted evaluations record into Airtable.")
     print('-------------------')
     print('END OF AIRTABLE INTEGRATION')
