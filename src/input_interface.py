@@ -3,7 +3,7 @@ from config import GRADE, COMMON_CORE_LEARNING_STANDARD_TOPICS, COMMON_CORE_LEAR
 import streamlit as st
 
 def get_user_input():
-        st.markdown("### Made by Dimitris Panouris")
+        st.markdown("### Customize your preferences:")
         grade = st.selectbox('Select Grade Level:', GRADE)
         standardTopic = st.selectbox('Select Common Core Learning Standard Topic:', COMMON_CORE_LEARNING_STANDARD_TOPICS)
         standardNum = st.selectbox('Select Common Core Learning Standard Number:', COMMON_CORE_LEARNING_STANDARD_NUM)

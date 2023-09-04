@@ -18,8 +18,11 @@ def main():
     # Set page title and description
     st.set_page_config(page_title="AI-driven Knowledge Assessment", page_icon=":books:", layout="centered", initial_sidebar_state="expanded")
     st.title("AI-driven Knowledge Assessment")
-    st.write("This app generates a set of knowledge assessment questions based on the user's input. The questions are generated using AI and are designed to test the user's understanding of a particular topic. The user can select the grade level, academic standard, topic, and number of questions they want to generate. Once the questions are generated, the user can answer them one by one and receive immediate feedback. This app is useful for educators, students, and anyone who wants to test their knowledge on a particular topic.")
-
+    st.write("This app generates a set of knowledge assessment questions. The questions are generated using AI and are designed to test a student's understanding of a particular topic.")
+    st.write("The student can select the Grade level, Common Core Learning Standard Topic and number, topic of interest, and number of questions to generate. You can also enter any username you like (does not impact anything on the app).")
+    st.write("Once the questions are generated, the student can answer them and receive immediate feedback. This app is useful for educators, students, and anyone who wants to test their knowledge on a particular topic.")
+    st.write("The app saves anonymous usage data (no IP or user tracking) for feedback and research purposes. The data is used to improve the AI models and the app.")
+    st.write("We would appreciate your feedback to improve this app. Please share your thoughts and suggestions at the end of the assessment.")
     # Initialize states
     initialize_session_state()
 
