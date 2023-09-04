@@ -74,7 +74,7 @@ streamlit run main.py
   - `|FinalGradeA - FinalGradeB| <= 1`
   
   For individual grades:
-  - `|IndividualGradeA - IndividualGradeB| <= 1`
+  - `|IndividualGradeA - IndividualGradeB| <= 2`
 
 
 To run the test:
