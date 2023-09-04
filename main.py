@@ -45,11 +45,17 @@ def main():
             }
             
             # Generate questions
-            st.session_state.questions_data = QuestionGenerator(grade=grade, standard=standardTopic, standardNum=standardNum, topic=topic, num_questions=num_questions).generate_questions()
+            st.session_state.questions_data = QuestionGenerator(
+                st.session_state.student['grade'], 
+                st.session_state.student['standard_topic'], 
+                st.session_state.student['standard_num'], 
+                st.session_state.student['topic'], 
+                st.session_state.student['num_questions']
+            ).generate_questions()
 
             st.session_state.questions = st.session_state.questions_data["questions"]
             st.session_state.user_answers = {q["id"]: "" for q in st.session_state.questions}
-        st.write("*Please be patient while the questions are being generated. This may take some time.*")
+        st.write("*Please be patient while the questions are being generated. This will take some time.*")
 
     # Display the questions and collect the user's answers
     if st.session_state.app_state in ['submission', 'results', 'feedback_submitted']:
@@ -70,11 +76,17 @@ def main():
             # Form Submit button
             if st.form_submit_button("Submit", on_click=disable_submit_btn, args=(True,), disabled=st.session_state.get("disabled_submit", False)):
                 st.session_state.app_state = 'results'
-            st.write("*Please be patient while the answers are being evaluated. This may take some time.*")
+            st.write("*Please be patient while the answers are being evaluated. This will take some time.*")
     
     if st.session_state.app_state in ['results', 'feedback_submitted']:
         # Fetch evaluations
-        st.session_state.evaluations = Evaluator(grade, st.session_state.questions_data['learning_standard'], topic, st.session_state.questions, st.session_state.user_answers).generate_evaluations()
+        st.session_state.evaluations = Evaluator(
+            st.session_state.student['grade'], 
+            st.session_state.questions_data['learning_standard'], 
+            st.session_state.student['topic'], 
+            st.session_state.questions, 
+            st.session_state.user_answers
+        ).generate_evaluations()
 
         # Display Thank You message and user responses
         st.write("Thank you for answering all the questions.")
