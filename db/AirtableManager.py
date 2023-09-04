@@ -48,10 +48,10 @@ class AirtableManager:
             'Session': self.session,
             'QuestionID': question_id,
             'Question': self.questions['questions'][question_id-1]['question'],
-            'Answer': self.answers[question_id] if self.session == 'User' else self.answers[question_id-1]['answer'],
+            'Answer': self.answers[question_id] if self.session == 'User' else self.answers['answers'][question_id-1]['answer'],
             'Grade': self.evaluations['evaluations'][question_id-1]['grade'],
             'Evaluation': self.evaluations['evaluations'][question_id-1]['explanation'],
-            'AutomatedGrade': self.answers[question_id-1]['grade'] if self.session == 'Automated' else None
+            'AutomatedGrade': self.answers['answers'][question_id-1]['grade'] if self.session == 'Automated' else None
         }
         questions_answers_table.create(questions_answers_record)
 
@@ -62,7 +62,7 @@ class AirtableManager:
             'Session': self.session,
             'FinalGrade': self.evaluations['finalGrade'],
             'FinalEvaluation': self.evaluations['finalFeedback'],
-            'AutomatedFinalGrade': self.answers[-1]['finalGrade'] if self.session == 'Automated' else None
+            'AutomatedFinalGrade': self.answers['finalGrade'] if self.session == 'Automated' else None
         }
         evaluations_table.create(evaluations_record)
 

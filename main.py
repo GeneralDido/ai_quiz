@@ -2,10 +2,10 @@ import streamlit as st
 
 from streamlit_star_rating import st_star_rating
 
-from ai_generators.user.generate_questions import generate_questions
-from ai_generators.user.generate_evaluations import generate_evaluations
+from ai.user.QuestionGenerator import QuestionGenerator
+from ai.user.Evaluator import Evaluator
 
-from db.AirtableManager import AirtableManager
+from db.AirtableManager import AirtableManager, insert_feedback_record
 
 from helper.functions import disable_feedback_btn, disable_generate_btn, disable_submit_btn
 
@@ -45,7 +45,7 @@ def main():
             }
             
             # Generate questions
-            st.session_state.questions_data = generate_questions(grade=grade, standard=standardTopic, standardNum=standardNum, topic=topic, num_questions=num_questions)
+            st.session_state.questions_data = QuestionGenerator(grade=grade, standard=standardTopic, standardNum=standardNum, topic=topic, num_questions=num_questions).generate_questions()
 
             st.session_state.questions = st.session_state.questions_data["questions"]
             st.session_state.user_answers = {q["id"]: "" for q in st.session_state.questions}
@@ -74,7 +74,7 @@ def main():
     
     if st.session_state.app_state in ['results', 'feedback_submitted']:
         # Fetch evaluations
-        st.session_state.evaluations = generate_evaluations(grade, st.session_state.questions_data['learning_standard'], topic, st.session_state.questions, st.session_state.user_answers)
+        st.session_state.evaluations = Evaluator(grade, st.session_state.questions_data['learning_standard'], topic, st.session_state.questions, st.session_state.user_answers).generate_evaluations()
 
         # Display Thank You message and user responses
         st.write("Thank you for answering all the questions.")

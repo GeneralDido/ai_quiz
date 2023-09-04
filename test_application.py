@@ -1,9 +1,9 @@
 import random
 
-from ai_generators.testing.answer_questions import answer_questions
-from ai_generators.user.generate_questions import generate_questions
-from ai_generators.user.generate_evaluations import generate_evaluations
-from ai_generators.testing.generate_topic import generate_topic
+from ai.testing.ResponseGenerator import ResponseGenerator
+from ai.user.QuestionGenerator import QuestionGenerator
+from ai.user.Evaluator import Evaluator
+from ai.testing.TopicGenerator import TopicGenerator
 from config import GRADE, COMMON_CORE_LEARNING_STANDARD_TOPICS, COMMON_CORE_LEARNING_STANDARD_NUM
 
 from config import MAX_NUM_QUESTIONS
@@ -24,35 +24,36 @@ def test_application():
     session_id = generate_session_id()
     student_name= generate_student_name()
 
-    student = generate_topic(grade=grade, standardTopic=standardTopic, standardNum=standardNum, numQuestions=numQuestions)
+    student = TopicGenerator(grade=grade, standardTopic=standardTopic, standardNum=standardNum, numQuestions=numQuestions).generate_topic()
     student['student_name'] = student_name
+
     print('STUDENT: ')
     print(student)
     print('-------------------')
 
-    questions = generate_questions(
+    questions = QuestionGenerator(
         grade=student['grade'], 
         standard=student['standard_topic'], 
         standardNum=student['standard_num'], 
         topic=student['topic'], 
         num_questions=student['num_questions']
-    )
+    ).generate_questions()
     print('QUESTIONS: ')
     print(questions)
     print('-------------------')
 
-    answers = answer_questions(questions=questions, student=student)
+    answers = ResponseGenerator(questions=questions, student=student).answer_questions()
     print('ANSWER QUESTIONS: ')
     print(answers)
     print('-------------------')
 
-    evaluations = generate_evaluations(
+    evaluations = Evaluator(
         grade=student['grade'], 
         standard=student['learning_standard'], 
         topic=student['topic'], 
         questions=questions['questions'], 
         answers=convert_answers_to_dict(answers)
-    )
+    ).generate_evaluations()
     print('EVALUATIONS: ')
     print(evaluations)
     print('-------------------')

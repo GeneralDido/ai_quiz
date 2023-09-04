@@ -2,6 +2,7 @@ from config import GRADE, COMMON_CORE_LEARNING_STANDARD_TOPICS, COMMON_CORE_LEAR
 
 import streamlit as st
 
+
 def get_user_input():
         st.markdown("### Customize your preferences:")
         grade = st.selectbox('Select Grade Level:', GRADE)

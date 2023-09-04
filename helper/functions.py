@@ -1,72 +1,69 @@
+import re
 import streamlit as st
 import json
 import secrets
 from faker import Faker
 
 
-# Converts a list of answers to a dictionary with question IDs as keys and answers as values. 
-def convert_answers_to_dict(answers: list) -> dict:
+# Converts answers to a dictionary with question IDs as keys and answers as values. 
+def convert_answers_to_dict(answers: dict) -> dict:
     answers_for_evaluation = {}
-    for answer in answers:
+    for answer in answers.get("answers", []):
         if "id" in answer:
             answers_for_evaluation[answer["id"]] = answer["answer"]
     return answers_for_evaluation
 
 
-# Evaluates the consistency of the grades between the answers and evaluations. Prints warnings if individaul question grades are inconsistent.
-def check_grades_consistency(answers, evaluations):
-    # Get the final grades from both evaluations
-    a1_final_grade = answers[-1]["finalGrade"]
-    a2_final_grade = evaluations["finalGrade"]
+def check_final_grades_consistency(a1_final_grade, a2_final_grade, tolerance=1):
+    return abs(a1_final_grade - a2_final_grade) <= tolerance
 
-    # Check if the final grades are consistent
-    if abs(a1_final_grade - a2_final_grade) > 1:
-        print("Final grades are not consistent.")
-        return False
 
-    # Get the grades for each question from both evaluations
-    a1_grades = {answer["id"]: answer["grade"] for answer in answers if "id" in answer}
-    a2_grades = {evaluation["id"]: evaluation["grade"] for evaluation in evaluations["evaluations"]}
-
-    # Check if the grades for each question are consistent
+def check_individual_grades_consistency(answers, evaluations, tolerance=2):
     inconsistent_grades = []
-    for question_id in a1_grades:
-        if question_id not in a2_grades:
+    answers_map = {answer["id"]: answer["answer"] for answer in answers}
+    a1_grades = {answer["id"]: answer["grade"] for answer in answers}
+    a2_grades = {evaluation["id"]: evaluation["grade"] for evaluation in evaluations}
+    
+    for question_id, a1_grade in a1_grades.items():
+        a2_grade = a2_grades.get(question_id)
+        if a2_grade is None:
             print(f"Question {question_id} not found in A2 evaluations.")
             return False
-        if abs(a1_grades[question_id] - a2_grades[question_id]) > 2:
-            inconsistent_grades.append((question_id, a1_grades[question_id], a2_grades[question_id]))
-
-    # Print a warning if there is inconsistency in the individual question grades
+        if abs(a1_grade - a2_grade) > tolerance:
+            inconsistent_grades.append((question_id, a1_grade, a2_grade, answers_map[question_id]))
+            
     if inconsistent_grades:
         print("Warning: Inconsistent grades for the following questions:")
-        for question_id, a1_grade, a2_grade in inconsistent_grades:
+        for question_id, a1_grade, a2_grade, answer_text in inconsistent_grades:
             print(f"Question {question_id}: A1 grade = {a1_grade}, A2 grade = {a2_grade}")
-            for answer in answers:
-                if answer.get("id") == question_id:
-                    print(f"A1 answer: {answer.get('answer')}")
-                    break
+            print(f"A1 answer: {answer_text}")
+    
+    return not bool(inconsistent_grades)
 
-    # Check if there are any questions in A2 evaluations that are not in A1 answers
-    for question_id in a2_grades:
-        if question_id not in a1_grades:
-            print(f"Question {question_id} not found in A1 answers.")
-            return False
 
-    # If all checks pass, the grades are consistent
+# Checks if the grades are consistent between the two applications, tolerance is the absolute difference between two grades.
+def check_grades_consistency(answers, evaluations, final_grade_tolerance=1, individual_grade_tolerance=2):
+    if not check_final_grades_consistency(answers["finalGrade"], evaluations["finalGrade"], final_grade_tolerance):
+        print("Final grades are not consistent.")
+        return False
+    
+    if not check_individual_grades_consistency(answers["answers"], evaluations["evaluations"], individual_grade_tolerance):
+        return False
+    
     print("Grades are consistent.")
     return True
 
 
-# Saves a string to a file.
-def save_to_file(string, file_path):
-    with open(file_path, 'w') as f:
-        f.write(string)
-
-
 # Generates a JSON response from the output of the AI.
 def json_response(response: str):
-    return json.loads(str(response).split("<|im_start|>assistant")[1][:-15])
+    # Extracting content after the "assistant" keyword
+    assistant_part = str(response).split("<|im_start|>assistant")[1]
+    # Using regex to match the entire JSON structure (from the first '{' to the last '}')
+    match = re.search(r'\{.*\}', assistant_part, re.DOTALL)
+    if match:
+        return json.loads(match.group(0))
+    else:
+        raise ValueError("No valid JSON found in the response")
 
 
 # Disable buttons after click
