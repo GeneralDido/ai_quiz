@@ -104,7 +104,7 @@ def main():
                 eval_item = next((item for item in st.session_state.evaluations['evaluations'] if item["id"] == q["id"]), None)
                 if eval_item:
                     
-                    st.write(f"##### Grade: {eval_item['grade']}")
+                    st.write(f"##### Grade: {eval_item['grade']}/5")
                     
                     st.write("##### Explanation:")
                     st.write(f"{eval_item['explanation']}")
@@ -112,7 +112,7 @@ def main():
                     st.write("Error: Evaluation not found for this question.")
         with st.expander(f"Final Feedback - Click to Expand", expanded=True):
             # Display final feedback and grade
-            st.write(f"##### Final Grade: {st.session_state.evaluations['finalGrade']}")
+            st.write(f"##### Final Grade: {st.session_state.evaluations['finalGrade']}/5")
 
             st.write("##### Final Feedback:")
             st.write(f"{st.session_state.evaluations['finalFeedback']}")
