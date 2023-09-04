@@ -2,16 +2,16 @@ import streamlit as st
 
 from streamlit_star_rating import st_star_rating
 
-from ai_generators.generate_questions import generate_questions
-from ai_generators.generate_evaluations import generate_evaluations
+from ai_generators.user.generate_questions import generate_questions
+from ai_generators.user.generate_evaluations import generate_evaluations
 
 from db.AirtableManager import AirtableManager
 
 from helper.functions import disable_feedback_btn, disable_generate_btn, disable_submit_btn
 
-from src.app_state import initialize_session_state
-from src.bar_chart import visualise_bar_chart
-from src.input_interface import get_user_input
+from ui.app_state import initialize_session_state
+from ui.bar_chart import visualise_bar_chart
+from ui.user_input import get_user_input
 
 def main():
     

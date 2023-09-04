@@ -1,9 +1,9 @@
 import random
 
-from ai_generators.answer_questions import answer_questions
-from ai_generators.generate_questions import generate_questions
-from ai_generators.generate_evaluations import generate_evaluations
-from ai_generators.generate_topic import generate_topic
+from ai_generators.testing.answer_questions import answer_questions
+from ai_generators.user.generate_questions import generate_questions
+from ai_generators.user.generate_evaluations import generate_evaluations
+from ai_generators.testing.generate_topic import generate_topic
 from config import GRADE, COMMON_CORE_LEARNING_STANDARD_TOPICS, COMMON_CORE_LEARNING_STANDARD_NUM
 
 from config import MAX_NUM_QUESTIONS
