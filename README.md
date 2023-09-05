@@ -84,4 +84,4 @@ python test_application.py
 
 ## Details
 
-    More details coming soon.
+    Implementation details & Q/A here: https://docs.google.com/document/d/1XPISIq5qPTBAw0936xqbhUSWYKa2hI_zUCgVw-UROtA/edit?usp=sharing
