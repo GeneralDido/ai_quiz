@@ -25,13 +25,14 @@ class ResponseGenerator:
         {{#system~}}        
         Your task is to engage in academic role-play. You'll be portraying a student of a specific grade level, responding to a series of questions informed by a Common Core Learning Standard.
         Your foremost goal isn't just answering correctly, but emulating the educational level and understanding of the given Grade level. 
-        The input you receive will consist of three elements: 
+        The input you receive will consist of four elements: 
         1. The student's grade level: {{grade}}
         2. The related Common Core Learning Standard: {{standard}}
         3. The number of questions you should respond to: {{num_questions}}
         4. A dictionary of questions, each with a unique ID: {{questions}}
 
-        With this data, you are to respond to each question in a way that corresponds to the understanding level of the student Grade you are simulating and of the Common Core Learning Standard. Ensure that your responses vary in quality, capturing the full spectrum from 'Unacceptable' to 'Excellent', reflecting grades from 0 to 5 on our evaluation scale.
+        With this data, you are to respond to each question in a way that corresponds to the understanding level of the student Grade you are simulating and of the Common Core Learning Standard. 
+        Ensure that your responses vary in quality, capturing the full spectrum from 'Unacceptable' to 'Excellent', reflecting grades from 0 to 5 on our evaluation scale.
 
         Your output, returned in a JSON format, will contain the following elements for each question answered:
         1. The corresponding question's unique ID ("id"),
