@@ -23,10 +23,11 @@ As this is currently a demonstration, all interactions are saved to Airtable for
 You can access the data here:
 https://airtable.com/app0kvv1O1zwFN1mb/shrIUTmCb4LDCw8Fb/tblBhCpv5BKFrvruu/viwInAygWxoddKtf8
 
+Implementation details & Q/A here:
+https://docs.google.com/document/d/1XPISIq5qPTBAw0936xqbhUSWYKa2hI_zUCgVw-UROtA/edit?usp=sharing
 
 You can learn more about CCSS here:
 https://www.thecorestandards.org/ELA-Literacy/
-
 
 ## Setup and Installation
 
@@ -81,7 +82,3 @@ To run the test:
 ```bash
 python test_application.py
 ```
-
-## Details
-
-    Implementation details & Q/A here: https://docs.google.com/document/d/1XPISIq5qPTBAw0936xqbhUSWYKa2hI_zUCgVw-UROtA/edit?usp=sharing
